@@ -41,6 +41,8 @@ int main(void) {
                 else state = wait;
                 break;
             case print:
+                //TODO: Fix same character being pressed over and over :|
+                //TODO: Fix line transitions
                 printCharLCD(keypadChar);
                 state = wait;
                 break;
