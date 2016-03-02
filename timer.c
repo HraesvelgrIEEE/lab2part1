@@ -8,7 +8,7 @@
 #include "timer.h"
 
 void initTimers() {
-    initTimer1();
+    //initTimer1(); //Uneeded atm
     initTimer2();
 }
 
@@ -30,7 +30,7 @@ void initTimer2() {
     IFS0bits.T2IF = 0; //Flag down
 }
 
-void delayMilliseconds(unsigned int delay) {
+void delayMs(unsigned int delay) {
     int i = 0;
     for (i = 0; i != delay; ++i) {
         delayUs(1000); //delay 1 ms

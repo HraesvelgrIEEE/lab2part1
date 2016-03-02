@@ -131,12 +131,6 @@ void initLCD(void) {
     writeLCD(0x0C, LCD_COMAND, 46); // 0000/1DCB=0000/1100 = 0C / Display ON, Cursor OFF, Blink mode OFF
 }
 
-/*
- * You can use printCharLCD here. Note that every time you write a character
- * the cursor increments its position automatically.
- * Since a string is just a character array, try to be clever with your use of pointers.
- */
-
 void printTimeLCD(unsigned time) {
     char formattedTime[9];
     unsigned int minutes, seconds, fractions;
@@ -160,6 +154,11 @@ void printTimeLCD(unsigned time) {
     printLineLCD(formattedTime,2); //Print time
 }
 
+/*
+ * You can use printCharLCD here. Note that every time you write a character
+ * the cursor increments its position automatically.
+ * Since a string is just a character array, try to be clever with your use of pointers.
+ */
 void printStringLCD(const char* s) {
     //Prints one character at a time from current position until string is terminated
     for (;*s != '\0' ; s++){

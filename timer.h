@@ -12,7 +12,7 @@ void initTimers();
 void initTimer1();
 void initTimer2();
 
-void delayMilliseconds(unsigned int delay);
+void delayMs(unsigned int delay);
 void delayUs(unsigned int delay);
 
 #endif	/* INITTIMER_H */
