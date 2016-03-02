@@ -1,0 +1,17 @@
+/*
+ * File:   lcd.h
+ * Authors:
+ *
+ */
+
+void writeLCD(unsigned char word, unsigned int commandType, unsigned int delay);
+void writeFourBits(unsigned char word, unsigned int commandType, unsigned int delayAfter, unsigned int lower);
+void initLCD(void);
+void clearLCD(void);
+void moveCursorLCD(unsigned char x, unsigned char y);
+void printCharLCD(char c);
+void printStringLCD(const char* s);
+void printTimeLCD(unsigned time);
+void print2StringsLCD(const char* s1, const char* s2);
+void printLineLCD(const char* s, int line);
+void testLCD();
