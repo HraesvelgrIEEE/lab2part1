@@ -12,7 +12,7 @@
 
 typedef enum stateTypeEnum {wait, debounce, scan, print} stateType;
 
-volatile stateType state = 0, nextState = 0;
+volatile stateType state = wait, nextState = wait;
 
 int main(void) {
     //Initialize
@@ -53,6 +53,8 @@ __ISR(_CHANGE_NOTICE_VECTOR, IPL7SRS) _CNInterrupt() {
     
     PORTEbits;
     
+    //FIXME: ROW4
+    short one = KEYPAD_ROW1, two = KEYPAD_ROW2, three = KEYPAD_ROW3, four = KEYPAD_ROW4;
     short keypadPortSum = KEYPAD_ROW1 + KEYPAD_ROW2 + KEYPAD_ROW3 + KEYPAD_ROW4;
     
     //Standard transition, debounced
