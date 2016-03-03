@@ -18,7 +18,7 @@ int main(void) {
     //Initialize
     initLCD();
     initKeypad();
-    initTimers(); //FIXME
+    initTimers();
     enableInterrupts(); 
     SYSTEMConfigPerformance(10000000);
     
@@ -26,7 +26,6 @@ int main(void) {
     
     while (1) {
         switch (state) {
-            //TODO: Everything
             case wait:
                 enableNSA();
                 delayMs(1);
@@ -41,8 +40,6 @@ int main(void) {
                 else state = wait;
                 break;
             case print:
-                //TODO: Fix same character being pressed over and over :|
-                //TODO: Fix line transitions
                 printCharLCD(keypadChar);
                 state = wait;
                 break;
@@ -56,21 +53,14 @@ __ISR(_CHANGE_NOTICE_VECTOR, IPL7SRS) _CNInterrupt() {
     PORTEbits;
     
     //FIXME: ROW4
-    short one = KEYPAD_ROW1, two = KEYPAD_ROW2, three = KEYPAD_ROW3, four = KEYPAD_ROW4;
-    short keypadPortSum = KEYPAD_ROW1 + KEYPAD_ROW2 + KEYPAD_ROW3 + KEYPAD_ROW4;
     
     //Standard transition, debounced
     if (state == wait) {
         nextState = scan;
         state = debounce;
     }
-    //Button press detected
-    else if (keypadPortSum < 4) {
-        nextState = scan;
-        state = debounce;
-    }
     //All buttons released
-    else if (keypadPortSum == 4) {
+    else if (KEYPAD_ROW1 + KEYPAD_ROW2 + KEYPAD_ROW3 + KEYPAD_ROW4 == 4) {
         nextState = wait;
         state = debounce;
     }

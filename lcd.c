@@ -74,6 +74,20 @@ void writeLCD(unsigned char word, unsigned int commandType, unsigned int delayAf
  */
 void printCharLCD(char c) {
     writeLCD(c, LCD_WRITE, 46); // WRITES a character to LCD
+    
+    char currAddress = getDDAddress();
+    
+    //FIXME Check actual LCD width -- currently 12 wide display
+    if ((currAddress & 0x0F) == 0x0B) {
+        //If currently on first line
+        if ((currAddress & 0xF0) == 0x00) {
+            moveCursorLCD(0,2);
+        }
+        else {
+            moveCursorLCD(0,1);
+        }
+    }
+    
 }
 
 /*Initialize the LCD
@@ -131,29 +145,6 @@ void initLCD(void) {
     writeLCD(0x0C, LCD_COMAND, 46); // 0000/1DCB=0000/1100 = 0C / Display ON, Cursor OFF, Blink mode OFF
 }
 
-void printTimeLCD(unsigned time) {
-    char formattedTime[9];
-    unsigned int minutes, seconds, fractions;
-    
-    minutes = time / 60000; 
-    minutes %= 100; //Force minutes to wraparound to 2 digits
-    seconds = (time % 60000) / 1000;
-    fractions = (time % 60000) % 1000 / 10;
-    
-    //Manually format string as MM:SS:FF
-    formattedTime[0] = (minutes / 10) + '0';
-    formattedTime[1] = (minutes % 10) + '0';
-    formattedTime[2] = ':';
-    formattedTime[3] = (seconds / 10) + '0';
-    formattedTime[4] = (seconds % 10) + '0';
-    formattedTime[5] = ':';
-    formattedTime[6] = (fractions / 10) + '0';
-    formattedTime[7] = (fractions % 10) + '0';
-    formattedTime[8] = '\0'; //Terminate
-    
-    printLineLCD(formattedTime,2); //Print time
-}
-
 /*
  * You can use printCharLCD here. Note that every time you write a character
  * the cursor increments its position automatically.
@@ -173,6 +164,15 @@ void clearLCD(){
     writeLCD(0x01, LCD_COMAND, 1640); // 0000/0001 = 01, clears the display
 }
 
+//TODO: Finish DD Address reading function to check when end of line reached
+char getDDAddress() {
+    unsigned char bits = 0xC0; //Base command for read DD address
+    
+    writeLCD(bits, LCD_WRITE, 46); //FIXME: Read data from (46 us delay) or read flag & address (1 us delay)?
+    
+    return bits;
+}
+
 /*
  Use the command for changing the DD RAM address to put the cursor somewhere.
  */
@@ -182,15 +182,6 @@ void moveCursorLCD(unsigned char x, unsigned char y){
     DD_address += x;
     DD_address += (y-1)*0x40;
     writeLCD(DD_address, LCD_COMAND, 40); // 0000/01(S/C)(R/L) = 01, clears the display
-}
-
-void print2StringsLCD(const char* s1, const char* s2){
-    printLineLCD(s1,1);
-    printLineLCD(s2,2);
-}
-void printLineLCD(const char* s, int line){ // line 1 or 2
-    moveCursorLCD(0, line);
-    printStringLCD(s);
 }
 
 void testLCD(){

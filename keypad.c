@@ -57,7 +57,7 @@ char scanKeypad(void) {
     KEYPAD_COL2 = OPEN;
     KEYPAD_COL3 = OPEN;
     
-    //FIXME COL1 read for COL2 -- corrected by swapping
+    //INVESTIGATE COL1 read for COL2 -- corrected by swapping
     
     if (KEYPAD_ROW1 == 0) key += '1';
     if (KEYPAD_ROW2 == 0) key += '4';
