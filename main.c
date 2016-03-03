@@ -43,7 +43,8 @@ int main(void) {
                     ++numPrinted;
                     
                     if (numPrinted >= 16) { //Line switch
-                        moveCursorLCD(0, 1 + !currLine);
+						currLine = !currLine;
+                        moveCursorLCD(0, 1 + currLine);
                         numPrinted = 0;
                     }
                 }
