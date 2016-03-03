@@ -9,6 +9,7 @@
 #define OPEN 1
 
 #define ENABLED 1
+#define DISABLED 0
 
 #define KEYPAD_SUM (KEYPAD_ROW1 + KEYPAD_ROW2 + KEYPAD_ROW3 + KEYPAD_ROW4)
 
@@ -36,7 +37,7 @@ void initKeypad(void) {
     CNENEbits.CNIEE1 = ENABLED;
     CNENEbits.CNIEE0 = ENABLED;
     
-    CNCONEbits.ON = 1;                  // Enable overall interrupt
+    CNCONEbits.ON = ENABLED;                  // Enable overall interrupt
     IFS1bits.CNEIF = 0;                 // Put down the flag
     IPC8bits.CNIP = 7;                  // Configure interrupt priority
     IEC1bits.CNEIE = ENABLED;           // Enable interrupt for E pins
@@ -49,8 +50,9 @@ void initKeypad(void) {
  * the key that is pressed. The ascii character c programmatically is just 'c'
  */
 char scanKeypad(void) {
-    //char key = -1;
     int key = 0;
+    
+    IEC1bits.CNEIE = DISABLED;
     
     //Scan column 1
     KEYPAD_COL1 = CLOSED;
@@ -64,6 +66,8 @@ char scanKeypad(void) {
     if (KEYPAD_ROW3 == 0) key += '7';
     if (KEYPAD_ROW4 == 0) key += '*';
     
+    delayMs(1);
+    
     //Scan column 2
     KEYPAD_COL1 = OPEN;
     KEYPAD_COL2 = CLOSED;
@@ -73,6 +77,8 @@ char scanKeypad(void) {
     if (KEYPAD_ROW2 == 0) key += '5';
     if (KEYPAD_ROW3 == 0) key += '8';
     if (KEYPAD_ROW4 == 0) key += '0';
+    
+    delayMs(1);
     
     //Scan column 3
     KEYPAD_COL1 = OPEN;
@@ -86,6 +92,8 @@ char scanKeypad(void) {
     
     if (key > 60) return -1;
     else return (char) key;
+    
+    IEC1bits.CNEIE = ENABLED;
 }
 
 void enableNSA() {

@@ -15,7 +15,7 @@
 #define KEYPAD_ROW1 PORTEbits.RE3
 #define KEYPAD_ROW2 PORTEbits.RE0
 #define KEYPAD_ROW3 PORTEbits.RE1
-#define KEYPAD_ROW4 1 //PORTEbits.RE2 //should be 2
+#define KEYPAD_ROW4 1 //PORTEbits.RE2
 
 void initKeypad(void);
 char scanKeypad(void);

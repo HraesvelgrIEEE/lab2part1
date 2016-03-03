@@ -10,9 +10,9 @@
 #include "lcd.h"
 #include "timer.h"
 
-typedef enum stateTypeEnum {wait, debounce, scan, print} stateType;
+typedef enum stateTypeEnum {waitPress, debounce, scan, print, waitRelease} stateType;
 
-volatile stateType state = wait, nextState = wait;
+volatile stateType state = waitPress, nextState = waitPress;
 
 int main(void) {
     //Initialize
@@ -28,9 +28,9 @@ int main(void) {
     
     while (1) {
         switch (state) {
-            case wait:
+            case waitPress:
                 enableNSA();
-                delayMs(1);
+                delayMs(5);
                 break;
             case debounce:
                 delayMs(5);
@@ -42,17 +42,21 @@ int main(void) {
                     state = print;
                     ++numPrinted;
                     
-                    if (numPrinted >= 16) { //Line switch
+                    if (numPrinted > 16) { //Line switch
 						currLine = !currLine;
                         moveCursorLCD(0, 1 + currLine);
                         numPrinted = 0;
                     }
                 }
-                else state = wait;
+                else state = waitRelease; 
                 break;
             case print:
                 printCharLCD(keypadChar);
-                state = wait;
+                state = waitRelease;
+                break;
+            case waitRelease:
+                //delayMs(5);
+                state = waitPress;
                 break;
         }
     }
@@ -66,13 +70,15 @@ __ISR(_CHANGE_NOTICE_VECTOR, IPL7SRS) _CNInterrupt() {
     //FIXME: ROW4
     
     //Standard transition, debounced
-    if (state == wait) {
+    if (state == waitPress) {
         nextState = scan;
         state = debounce;
     }
     //All buttons released
-    else if (KEYPAD_ROW1 + KEYPAD_ROW2 + KEYPAD_ROW3 + KEYPAD_ROW4 == 4) {
-        nextState = wait;
+    else if (state == waitRelease && (KEYPAD_ROW1 + KEYPAD_ROW2 + KEYPAD_ROW3 + KEYPAD_ROW4 == 4)) {
+        nextState = waitPress;
         state = debounce;
     }
+    
+    state;
 }
