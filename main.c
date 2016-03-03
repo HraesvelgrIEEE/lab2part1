@@ -23,6 +23,8 @@ int main(void) {
     SYSTEMConfigPerformance(10000000);
     
     char keypadChar = 0;
+    char numPrinted = 0;
+    char currLine = 0; //0 indexed
     
     while (1) {
         switch (state) {
@@ -36,7 +38,15 @@ int main(void) {
                 break;
             case scan:
                 keypadChar = scanKeypad();
-                if (keypadChar != -1) state = print;
+                if (keypadChar != -1) {
+                    state = print;
+                    ++numPrinted;
+                    
+                    if (numPrinted >= 16) { //Line switch
+                        moveCursorLCD(0, 1 + !currLine);
+                        numPrinted = 0;
+                    }
+                }
                 else state = wait;
                 break;
             case print:

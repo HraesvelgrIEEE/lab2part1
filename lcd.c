@@ -74,20 +74,6 @@ void writeLCD(unsigned char word, unsigned int commandType, unsigned int delayAf
  */
 void printCharLCD(char c) {
     writeLCD(c, LCD_WRITE, 46); // WRITES a character to LCD
-    
-    char currAddress = getDDAddress();
-    
-    //FIXME Check actual LCD width -- currently 12 wide display
-    if ((currAddress & 0x0F) == 0x0B) {
-        //If currently on first line
-        if ((currAddress & 0xF0) == 0x00) {
-            moveCursorLCD(0,2);
-        }
-        else {
-            moveCursorLCD(0,1);
-        }
-    }
-    
 }
 
 /*Initialize the LCD
@@ -162,15 +148,6 @@ void printStringLCD(const char* s) {
  */
 void clearLCD(){
     writeLCD(0x01, LCD_COMAND, 1640); // 0000/0001 = 01, clears the display
-}
-
-//TODO: Finish DD Address reading function to check when end of line reached
-char getDDAddress() {
-    unsigned char bits = 0xC0; //Base command for read DD address
-    
-    writeLCD(bits, LCD_WRITE, 46); //FIXME: Read data from (46 us delay) or read flag & address (1 us delay)?
-    
-    return bits;
 }
 
 /*

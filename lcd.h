@@ -9,7 +9,6 @@ void writeFourBits(unsigned char word, unsigned int commandType, unsigned int de
 void initLCD(void);
 void clearLCD(void);
 void moveCursorLCD(unsigned char x, unsigned char y); //column, row
-char getDDAddress(); //returns DD address
 void printCharLCD(char c);
 void printStringLCD(const char* s);
 void testLCD();
