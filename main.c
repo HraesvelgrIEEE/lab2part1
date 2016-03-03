@@ -26,11 +26,24 @@ int main(void) {
     char numPrinted = 0;
     char currLine = 0; //0 indexed
     
+//    int i = 0;
+//    for (i = 0; i != 255; ++i) {
+//        moveCursorLCD(1,1);
+//        printCharLCD('0' + (i / 100));
+//        printCharLCD('0' + (i % 100) / 10);
+//        printCharLCD('0' + (i % 10));
+//        printCharLCD(':');
+//        printCharLCD(i);
+//        
+//        delayMs(1000);
+//    }
+//    
+//    while (1);
+    
     while (1) {
         switch (state) {
             case waitPress:
                 enableNSA();
-                delayMs(5);
                 break;
             case debounce:
                 delayMs(5);
@@ -42,7 +55,7 @@ int main(void) {
                     state = print;
                     ++numPrinted;
                     
-                    if (numPrinted > 16) { //Line switch
+                    if (numPrinted >= 16) { //Line switch
 						currLine = !currLine;
                         moveCursorLCD(0, 1 + currLine);
                         numPrinted = 0;
@@ -56,7 +69,6 @@ int main(void) {
                 break;
             case waitRelease:
                 //delayMs(5);
-                state = waitPress;
                 break;
         }
     }
@@ -64,8 +76,10 @@ int main(void) {
 
 __ISR(_CHANGE_NOTICE_VECTOR, IPL7SRS) _CNInterrupt() {
     IFS1bits.CNEIF = 0;
+    IFS1bits.CNDIF = 0;
     
-    PORTEbits;
+    PORTE;
+    PORTD;
     
     //FIXME: ROW4
     
@@ -79,6 +93,4 @@ __ISR(_CHANGE_NOTICE_VECTOR, IPL7SRS) _CNInterrupt() {
         nextState = waitPress;
         state = debounce;
     }
-    
-    state;
 }
